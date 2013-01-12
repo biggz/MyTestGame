@@ -25,8 +25,8 @@ public class MyTestGame implements ApplicationListener {
 	Music rainMusic;
 	OrthographicCamera camera;
 	SpriteBatch batch;
-	Rectangle bucket, drop;
-	Array<Rectangle> raindrops;
+	Rectangle bucket;
+	Array<Drop> raindrops;
 	long lastDropTime;
 	Vector3 touchPos;
 	
@@ -58,7 +58,7 @@ public class MyTestGame implements ApplicationListener {
 		touchPos = new Vector3();
 		
 		//Raindrops
-		raindrops = new Array<Rectangle>();
+		raindrops = new Array<Drop>();
 		spawnRaindrop();
 		
 		//Start music
@@ -114,11 +114,11 @@ public class MyTestGame implements ApplicationListener {
 		//Spawn Raindrop every second
 		if(TimeUtils.nanoTime() - lastDropTime > 1000000000) spawnRaindrop();
 		//Move Raindrops
-		Iterator<Rectangle> iter = raindrops.iterator();
+		Iterator<Drop> iter = raindrops.iterator();
 		//Update Raindrop
 		while(iter.hasNext()){
-			Rectangle raindrop = iter.next();
-			raindrop.y -= 200 * Gdx.graphics.getDeltaTime();
+			Drop raindrop = iter.next();
+			raindrop.update();
 			//Remove Raindrop if off screen
 			if (raindrop.y + 48 < 0) iter.remove();
 			//Detect Collision with bucket
@@ -142,11 +142,7 @@ public class MyTestGame implements ApplicationListener {
 	}
 	
 	private void spawnRaindrop(){
-		Rectangle raindrop = new Rectangle();
-		raindrop.x = MathUtils.random(0, 800-48);
-		raindrop.y = 480;
-		raindrop.width = 48;
-		raindrop.height = 48;
+		Drop raindrop = new Drop();
 		raindrops.add(raindrop);
 		lastDropTime = TimeUtils.nanoTime();
 	}
